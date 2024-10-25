@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    image: trickstercell/rule-engine-be:latest
+    # image: sha256:69df264a08965e02c1a20d54c005240923890a75173ac2c3333c050de1409d38
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://root:example@mongodb:27017
+    depends_on:
+      - mongodb
+
+  frontend:
+    image: trickstercell/rule-engine-fe:latest
+    # image: sha256:e0ca7cb47d362a304c4eb8980879e0437ee30ea23cd163d3a253fb6537aa6afa
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_SERVER_URL=http://app:8000
+    depends_on:
+      - app
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
